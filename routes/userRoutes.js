@@ -5,7 +5,7 @@ const router = express.Router();
 import UserController from '../controllers/userController.js';
 
 // Routes
-router.post('/register', UserController.register);
-router.post('/login', UserController.login);
+router.get('/', UserController.googleLogin);
+router.get('/callback', UserController.googleCallback);
 
 export default router;
