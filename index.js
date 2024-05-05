@@ -4,6 +4,10 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
+import LocalStrategy from 'passport-local'
+import jwt from 'jsonwebtoken'
+import cors from 'cors';
+import userRoutes from './routes/userRoutes.js'
 
 // Load environment variables from .env file
 dotenv.config();
@@ -12,26 +16,21 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors())
 app.use(bodyParser.json());
+app.use(passport.initialize())
 app.use(methodOverride('_method'));
 
 // Connect to MongoDB
-mongoose.connect(process.env.DB);
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-db.once('open', () => {
-    console.log("Connected to MongoDB");
-});
+mongoose.connect(process.env.DB).then(()=>console.log("connected")).catch((e)=>console.log(e))
 
 import './config/passport.js';
 
 // Routes
-import userRoutes from './routes/userRoutes.js';
-app.use('/users', userRoutes);
 
 // import storyRoutes from './routes/storyRoutes';
-// app.use('/users', userRoutes);
+app.use('/users', userRoutes);
 // app.use('/stories', storyRoutes);
 
 // Error handling middleware
